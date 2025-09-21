@@ -17,7 +17,20 @@ for directory in [BASE_DIR, BACKUP_DIR, DATA_DIR, EXPORT_DIR]:
 DB_PATH = DATA_DIR / "livraria.db"
 
 # 2 - Funcoes de gerenciamento do banco de dados
-
+def criar_tabela():
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS livros (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            titulo TEXT NOT NULL,
+            autor TEXT NOT NULL,
+            ano_publicacao INTEGER,
+            preco REAL NOT NULL
+        )
+    ''')
+    conn.commit()
+    conn.close()
 
 #4 - Funcoes de CRUD
 
