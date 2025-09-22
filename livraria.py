@@ -52,7 +52,7 @@ def limpar_backups_antigos():
     for backup in backups[5:]:
         backup.unlink()
         print(f"Backup antigo removido: {backup}")
-        
+
 # 5 - Funções CRUD
 def adicionar_livro():
     fazer_backup()
@@ -175,7 +175,50 @@ def buscar_por_autor():
     
     conn.close() 
 # 6- Funcoes de exportacao/Importacao CSV
+def exportar_csv():
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    
+    cursor.execute("SELECT * FROM livros")
+    livros = cursor.fetchall()
+    
+    csv_file = EXPORT_DIR / "livros_exportados.csv"
+    
+    with open(csv_file, 'w', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        writer.writerow(['ID', 'Título', 'Autor', 'Ano Publicação', 'Preço'])
+        writer.writerows(livros)
+    
+    print(f"Dados exportados para: {csv_file}")
+    conn.close()
 
+def importar_csv():
+    fazer_backup()  
+    
+    csv_file = input("Nome do arquivo CSV para importar: ")
+    csv_path = EXPORT_DIR / csv_file
+    
+    if not csv_path.exists():
+        print("Arquivo não encontrado!")
+        return
+    
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    
+    with open(csv_path, 'r', encoding='utf-8') as file:
+        reader = csv.reader(file)
+        next(reader) 
+        
+        for row in reader:
+            cursor.execute('''
+            INSERT INTO livros (titulo, autor, ano_publicacao, preco)
+            VALUES (?, ?, ?, ?)
+            ''', (row[1], row[2], int(row[3]), float(row[4])))
+    
+    conn.commit()
+    conn.close()
+    print("Dados importados com sucesso!")
+    
 # 7 - Menu Principal
 
 # 8 - Execucao do sistema
