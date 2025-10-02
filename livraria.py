@@ -1,6 +1,7 @@
+import csv
 import sqlite3
 import os
-import cvs
+import csv
 import shutil
 from pathlib import Path
 from datetime import datetime   
@@ -97,7 +98,7 @@ def exibir_livros():
     if not livros:
         print("Nenhum livro cadastrado.")
     else:
-        print("\n=== Livris Cadastrados ===")
+        print("\n=== Livros Cadastrados ===")
         for livro in livros:
             print(f"ID: {livro[0]}")
             print(f"Título: {livro[1]}")
@@ -173,7 +174,8 @@ def buscar_por_autor():
             print(f"Preço: R$ {livro[4]:.2f}")
             print("-" * 30)
     
-    conn.close() 
+    conn.close()
+
 # 6- Funcoes de exportacao/Importacao CSV
 def exportar_csv():
     conn = sqlite3.connect(DB_PATH)
@@ -220,6 +222,51 @@ def importar_csv():
     print("Dados importados com sucesso!")
     
 # 7 - Menu Principal
+def menu_principal():
+    while True:
+        print("\n=== SISTEMA DE GERENCIAMENTO DE LIVRARIA ===")
+        print("1. Adicionar novo livro")
+        print("2. Exibir todos os livros")
+        print("3. Atualizar preço de um livro")
+        print("4. Remover livro")
+        print("5. Buscar livros por autor")
+        print("6. Exportar dados para CSV")
+        print("7. Importar dados de CSV")
+        print("8. Fazer backup do banco de dados")
+        print("9. Sair")
+        
+        opcao = input("Escolha uma opção: ")
+        
+        if opcao == '1':
+            adicionar_livro()
+        elif opcao == '2':
+            exibir_livros()
+        elif opcao == '3':
+            atualizar_preco()
+        elif opcao == '4':
+            remover_livro()
+        elif opcao == '5':
+            buscar_por_autor()
+        elif opcao == '6':
+            exportar_csv()
+        elif opcao == '7':
+            importar_csv()
+        elif opcao == '8':
+            fazer_backup()
+        elif opcao == '9':
+            print("Saindo do sistema...")
+            break
+        else:
+            print("Opção inválida! Tente novamente.")
+    
 
 # 8 - Execucao do sistema
-
+if __name__ == "__main__":
+    
+    criar_tabela()
+    print("Sistema de Gerenciamento de Livraria inicializado!")
+    print(f"Diretório base: {BASE_DIR}")
+    
+    # Executar menu principal
+    menu_principal()
+    # python livraria.py
